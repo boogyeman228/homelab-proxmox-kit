@@ -35,6 +35,24 @@ Telegram accepted the message, so alerts raised during an internet outage arrive
   in 7 days with the top blocked domains, backup list, pending Proxmox updates, Tailscale devices.
 - **Commands** you can send the bot at any time: `/status`, `/battery`, `/system`, `/services`, `/ads`,
   `/check <site>` (blocked or not, by which rule and list), `/backup`, `/report`, `/help`.
+- **Commands that change something:** `/charge 80` sets the battery charge limit (recharge starts 5 points below),
+  `/fan quiet|balanced|performance` sets the CPU profile, `/wake` sends a Wake-on-LAN packet.
+
+## Charge limit, cooling, Wake-on-LAN
+
+- **Charge limit** (`battery-limit.timer`, every minute): the firmware only knows "conservation mode" (hold at about
+  60%) or full charge, so the script switches it by hysteresis: charge until `CHARGE_MAX` (default 80), then stop, charge
+  again when the level falls to `CHARGE_MIN` (default 75). While on battery nothing is changed.
+- **Cooling:** this class of laptop does not expose fan speed or control to Linux (the embedded controller returns
+  unrelated values), so `/fan` changes the CPU governor, energy preference and turbo instead. That lowers heat and
+  therefore noise. The profile is saved in `/etc/default/home-thermal` and applied at boot.
+- **Wake-on-LAN:** put `PC_MAC` (and `PC_IP` for the confirmation ping) into `/etc/home-alert.conf`. The PC must allow
+  waking on a magic packet (BIOS/UEFI and the network adapter's power settings). Over Wi-Fi this works only from sleep /
+  modern standby, not from a full shutdown; wired Ethernet also works from shutdown if the BIOS allows it.
+- **PC state (`/pc`, also used by `/wake`):** 🟢 answers ping (awake), 🟡 answers ARP only (asleep, or ping blocked),
+  🔴 not on the network (off or hibernating). A sleeping Wi-Fi PC still answers ARP, so telling "asleep" from "awake"
+  needs ping to be allowed. Windows blocks it by default; allow it for the home network only, in an admin PowerShell:
+  `New-NetFirewallRule -DisplayName "Ping from home LAN" -Protocol ICMPv4 -IcmpType 8 -RemoteAddress 192.168.1.0/24 -Action Allow`
 
 ## Uptime Kuma
 

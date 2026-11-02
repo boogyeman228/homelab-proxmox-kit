@@ -9,6 +9,9 @@ MONITOR_IP=192.168.1.12
 ROUTER_IP=192.168.1.1
 # language of the bot and the reports: en or ru
 HOME_LANG=en
+# Optional, for /wake: the PC to wake with Wake-on-LAN (its MAC and current IP)
+#PC_MAC=aa:bb:cc:dd:ee:ff
+#PC_IP=192.168.1.50
 # AdGuard API login for /ads and /check (a second AdGuard user, see docs/setup.md). Optional.
 ADGUARD_URL=http://192.168.1.11
 ADGUARD_USER=homebot

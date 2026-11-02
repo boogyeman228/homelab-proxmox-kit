@@ -50,7 +50,7 @@ and set it as default.
 2. Put the token and your chat id into `/etc/home-alert.conf`.
 3. `bash host/proxmox-telegram-notify.sh` sends Proxmox notifications to the same chat.
 4. Commands: the `home-bot` service answers `/help`, `/status`, `/battery`, `/system`, `/services`, `/ads`,
-   `/check site`, `/backup` and `/report` in your chat only (other chats are ignored). It only makes outbound
+   `/check site`, `/backup`, `/report`, `/charge`, `/fan`, `/wake` and `/pc` in your chat only (other chats are ignored). It only makes outbound
    HTTPS requests, so no port needs to be open. `HOME_LANG=ru` in `/etc/home-alert.conf` switches the texts to Russian.
 5. For `/ads` and `/check` the bot needs the AdGuard API. AdGuard has no read-only role, so add a second user
    next to your own in `AdGuardHome.yaml` (stop the service first), put its bcrypt hash in the `password:` field and the

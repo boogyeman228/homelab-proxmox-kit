@@ -1,0 +1,6 @@
+[Unit]
+Description=Battery charge limit (hysteresis)
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/battery-limit.sh

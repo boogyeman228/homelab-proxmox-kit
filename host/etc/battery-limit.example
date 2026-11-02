@@ -1,0 +1,3 @@
+# copy to /etc/default/battery-limit (the Telegram command /charge N writes this file)
+CHARGE_MAX=80
+CHARGE_MIN=75

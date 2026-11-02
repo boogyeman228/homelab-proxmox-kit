@@ -18,12 +18,16 @@ jq -n --arg a "$(L "общая сводка" "overall summary")" --arg b "$(L "�
   --arg c "$(L "нагрузка, память, диски" "load, memory, disks")" --arg d "$(L "контейнеры и сеть" "containers and network")" \
   --arg e "$(L "статистика блокировки рекламы" "ad-blocking statistics")" --arg f "$(L "проверить, заблокирован ли сайт" "is a site blocked")" \
   --arg g "$(L "последние бэкапы" "latest backups")" --arg h "$(L "недельный отчёт сейчас" "weekly report now")" \
+  --arg i "$(L "лимит зарядки батареи" "battery charge limit")" --arg j "$(L "профиль охлаждения" "cooling profile")" \
+  --arg k "$(L "включить ПК по сети" "wake the PC over the network")" --arg m "$(L "ПК выключен, спит или работает" "is the PC off, asleep or on")" \
   '{commands: [{command:"status",description:$a},{command:"battery",description:$b},{command:"system",description:$c},
   {command:"services",description:$d},{command:"ads",description:$e},{command:"check",description:$f},
-  {command:"backup",description:$g},{command:"report",description:$h},{command:"help",description:"help"}]}' |
+  {command:"backup",description:$g},{command:"report",description:$h},{command:"charge",description:$i},
+  {command:"fan",description:$j},{command:"wake",description:$k},{command:"pc",description:$m},{command:"help",description:"help"}]}' |
   curl -fsS -m 15 -H 'Content-Type: application/json' -d @- "$API/setMyCommands" >/dev/null 2>&1
 
 report() { timeout "$1" "$REPORT" "${@:2}" </dev/null; }  # stdin closed so nothing eats the queued updates
+control() { timeout "$1" /usr/local/sbin/home-control.sh "${@:2}" </dev/null; }
 
 handle() {
   local cmd arg out
@@ -39,6 +43,10 @@ handle() {
     /check) out=$(report 30 check "$arg") ;;
     /backup|/backups) out=$(report 10 backup) ;;
     /report|/weekly) out=$(report 120 weekly) ;;
+    /charge) out=$(control 20 charge "$arg") ;;
+    /fan) out=$(control 20 fan "$arg") ;;
+    /wake) out=$(control 90 wake) ;;
+    /pc) out=$(control 30 pc) ;;
     /*) out="$(L "Не знаю такую команду. Список: /help" "Unknown command. See /help")" ;;
     *) return ;;
   esac

@@ -14,10 +14,12 @@ inbound ports. Remote access goes through Tailscale.
 | AdGuard Home (LXC) | `adguard/` | DNS ad/tracker/malware blocking, optional adult, gambling and scam lists, short local names |
 | Monitoring stack (LXC + Docker) | `stack/` | Uptime Kuma, Prometheus, Grafana (provisioned dashboard), Homepage start page, Caddy for `*.home` names |
 | Watchdog | `host/sbin/home-watchdog.sh` | Checks host and stack every 5 minutes, sends Telegram alerts on state changes only |
-| Telegram bot | `host/sbin/home-bot.sh`, `home-report.sh` | Ask the server yourself: `/status`, `/battery`, `/system`, `/services`, `/ads`, `/check site`, `/backup`, `/report`. Answers only your chat |
+| Telegram bot | `host/sbin/home-bot.sh`, `home-report.sh` | Ask the server yourself: `/status`, `/battery`, `/system`, `/services`, `/ads`, `/check site`, `/backup`, `/report`, `/charge`, `/fan`, `/wake`. Answers only your chat |
 | Reports | `host/sbin/home-digest.sh` | Short daily report (Mon-Sat 09:00) and a full weekly report on Sundays: uptime, power, battery health, disks, ads blocked, backups, updates |
 | Power reporting | `host/sbin/kuma-power-push.sh` | Tells an Uptime Kuma push monitor whether the host is on mains or battery |
 | Battery guard | `host/sbin/battery-guard.sh`, `host/bin/battery` | Clean shutdown below 10% on battery, `battery` status command |
+| Charge limit | `host/sbin/battery-limit.sh` | Laptop-as-server battery care: charges to 80%, holds, recharges from 75% (configurable, `/charge 70` in Telegram) |
+| Cooling profile, Wake-on-LAN | `host/sbin/home-control.sh` | `/fan quiet\|balanced\|performance` (CPU governor and turbo, which sets heat and noise), `/wake` sends a magic packet to your PC, `/pc` tells whether it is off, asleep or on |
 | USB NIC watchdog | `host/sbin/usb-lan-fix.sh` | Re-attaches a USB Ethernet adapter to the bridge when it drops |
 | Proxmox notifications | `host/proxmox-telegram-notify.sh` | Sends Proxmox events (failed backups etc.) to Telegram |
 

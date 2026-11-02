@@ -9,6 +9,7 @@ STATE=/var/lib/home-watchdog
 BAT=/sys/class/power_supply/BAT0
 MAINS=/sys/class/power_supply/ADP0/online
 CONSERVATION=/sys/bus/platform/drivers/ideapad_acpi/VPC2004:00/conservation_mode
+CHARGE_MAX=80; CHARGE_MIN=75; [ -r /etc/default/battery-limit ] && . /etc/default/battery-limit
 
 L() { if [ "$HOME_LANG" = ru ]; then printf '%s' "$1"; else printf '%s' "$2"; fi; }  # L "русский" "english"
 yes_no() { "$@" >/dev/null 2>&1 && printf '✓' || printf '✗'; }
@@ -86,14 +87,15 @@ battery_text() {
     Charging) stw=$(L "заряжается" "charging") ;;
     Discharging) stw=$(L "разряжается" "discharging") ;;
     Full) stw=$(L "полная" "full") ;;
-    *) stw=$(L "не заряжается" "not charging") ;;
+    *) if [ "$(cat $CONSERVATION 2>/dev/null)" = 1 ] && [ "$cap" -ge "$CHARGE_MIN" ]; then stw=$(L "держит лимит" "holding the limit")
+       else stw=$(L "не заряжается" "not charging"); fi ;;
   esac
   echo "🔋 $(L Заряд Charge): ${cap}% ($stw)$(time_left)"
   echo "🔌 $(L Зарядка Charger): $([ "$ac" = 1 ] && L "подключена" "connected" || L "ОТКЛЮЧЕНА" "NOT connected")"
   awk -v p="$pw" -v l="$(L "Потребление" "Power draw")" 'BEGIN { printf "⚡ %s: %.1f W\n", l, p / 1000000 }'
   awk -v f="$full" -v d="$design" -v l="$(L "Здоровье батареи" "Battery health")" -v t="$(L "от начальной ёмкости" "of original capacity")" 'BEGIN { printf "❤️ %s: %.0f%% %s\n", l, f / d * 100, t }'
   echo "🔁 $(L "Циклов зарядки" "Charge cycles"): $cyc"
-  echo "🛡 $(L "Бережный режим" "Conservation mode"): $([ "$(cat $CONSERVATION 2>/dev/null)" = 1 ] && L "включён (держит ~60%)" "on (holds ~60%)" || L "выключен" "off")"
+  echo "🎯 $(L "Лимит зарядки" "Charge limit"): ${CHARGE_MAX}% ($(L "подзарядка с" "recharge from") ${CHARGE_MIN}%)"
   echo "⏻ $(L "Автовыключение на батарее" "Auto-shutdown on battery"): 10% ($(systemctl is-active battery-guard.timer))"
 }
 
@@ -198,6 +200,10 @@ help_text() {
 /check сайт — заблокирован ли сайт и каким списком
 /backup — последние бэкапы
 /report — недельный отчёт сейчас
+/charge 80 — лимит зарядки батареи
+/fan — профиль охлаждения (quiet, balanced, performance)
+/wake — включить ПК по сети (Wake-on-LAN)
+/pc — ПК выключен, спит или работает
 
 Сам пишу: сразу при проблемах, кратко каждый день в 09:00, по воскресеньям недельный отчёт.
 EOF
@@ -211,6 +217,10 @@ EOF
 /check site — is a site blocked, and by which list
 /backup — latest backups
 /report — weekly report now
+/charge 80 — battery charge limit
+/fan — cooling profile (quiet, balanced, performance)
+/wake — wake the PC over the network (Wake-on-LAN)
+/pc — is the PC off, asleep or on
 
 Automatic: instantly on problems, a short report every day at 09:00, the weekly report on Sundays.
 EOF
@@ -230,6 +240,7 @@ weekly_text() {
   echo "🧷 $(L "Устройств в Tailscale" "Tailscale devices"): $(tailscale status 2>/dev/null | wc -l)"
 }
 
+[[ ${BASH_SOURCE[0]} != "$0" ]] && return 0   # sourced by home-control.sh: only the functions are wanted
 case "$1" in
   status) status_text ;;
   battery) battery_text ;;

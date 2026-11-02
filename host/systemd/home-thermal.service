@@ -1,0 +1,10 @@
+[Unit]
+Description=Apply the saved CPU/cooling profile at boot
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/local/sbin/home-control.sh fan apply
+
+[Install]
+WantedBy=multi-user.target

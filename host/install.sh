@@ -15,7 +15,9 @@ sysctl --system >/dev/null
 [ -e /etc/default/usb-lan-fix ] || echo "-> USB NIC watchdog not enabled. If the host uses a USB LAN adapter: copy etc/usb-lan-fix.example to /etc/default/usb-lan-fix, edit it, then 'systemctl enable --now usb-lan-fix'"
 
 systemctl daemon-reload
-systemctl enable --now battery-guard.timer home-watchdog.timer home-digest.timer home-daily.timer home-bot.service
+[ -e /etc/default/battery-limit ] || install -m 644 etc/battery-limit.example /etc/default/battery-limit
+systemctl enable --now battery-guard.timer battery-limit.timer home-watchdog.timer home-digest.timer home-daily.timer home-bot.service
+systemctl enable --now home-thermal.service
 systemctl try-restart home-bot.service   # pick up a newer script on re-runs
 # the Kuma push monitor stays idle until /etc/kuma-push-url exists
 systemctl enable --now kuma-power-push.timer
