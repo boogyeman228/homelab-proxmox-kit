@@ -1,0 +1,12 @@
+[Unit]
+Description=Telegram command bot (status, battery, ads, ...)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+ExecStart=/usr/local/sbin/home-bot.sh
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

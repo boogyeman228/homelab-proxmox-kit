@@ -81,6 +81,7 @@ fi
 if timeout 5 nslookup example.com "$ADGUARD_IP" >/dev/null 2>&1; then check dns ok "AdGuard answers DNS queries"; else check dns bad "AdGuard ($ADGUARD_IP) does not answer DNS queries"; fi
 TS=$(tailscale status --json 2>/dev/null | grep -o '"BackendState": *"[A-Za-z]*"' | head -1 | grep -o '[A-Za-z]*"$' | tr -d '"')
 [ "$TS" = Running ] && check tailscale ok "Tailscale" || check tailscale bad "Tailscale is not running (${TS:-no answer})"
+if systemctl is-active --quiet home-bot.service; then check bot ok "Telegram bot"; else check bot bad "Telegram bot (home-bot.service) is not running"; fi
 
 # --- backups: the newest dump must be younger than 9 days (grace period after install)
 [ -f "$STATE/installed" ] || echo "$NOW" > "$STATE/installed"

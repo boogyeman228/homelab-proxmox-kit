@@ -4,4 +4,4 @@ After=network-online.target
 
 [Service]
 Type=oneshot
-ExecStart=/usr/local/sbin/home-digest.sh
+ExecStart=/usr/local/sbin/home-digest.sh weekly

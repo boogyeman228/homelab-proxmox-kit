@@ -25,6 +25,16 @@ Telegram accepted the message, so alerts raised during an internet outage arrive
 | Tailscale | backend state is not `Running` |
 | Backups | newest dump older than 9 days |
 | Reboot | boot id changed since the last run |
+| Telegram bot | `home-bot.service` is not running |
+
+## Reports and commands
+
+- **Daily report** (Mon-Sat 09:00): problems or "all good", power, uptime, CPU temperature, disk, ads blocked
+  yesterday, age of the last backup.
+- **Weekly report** (Sunday 09:00): everything above plus battery health and cycles, memory, all disks, ads blocked
+  in 7 days with the top blocked domains, backup list, pending Proxmox updates, Tailscale devices.
+- **Commands** you can send the bot at any time: `/status`, `/battery`, `/system`, `/services`, `/ads`,
+  `/check <site>` (blocked or not, by which rule and list), `/backup`, `/report`, `/help`.
 
 ## Uptime Kuma
 

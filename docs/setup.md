@@ -49,7 +49,15 @@ and set it as default.
 1. Create a bot with @BotFather and send it any message from your account.
 2. Put the token and your chat id into `/etc/home-alert.conf`.
 3. `bash host/proxmox-telegram-notify.sh` sends Proxmox notifications to the same chat.
-4. Optional: create a check on healthchecks.io (period 5 min, grace 10 min, Telegram integration) and write its ping
+4. Commands: the `home-bot` service answers `/help`, `/status`, `/battery`, `/system`, `/services`, `/ads`,
+   `/check site`, `/backup` and `/report` in your chat only (other chats are ignored). It only makes outbound
+   HTTPS requests, so no port needs to be open. `HOME_LANG=ru` in `/etc/home-alert.conf` switches the texts to Russian.
+5. For `/ads` and `/check` the bot needs the AdGuard API. AdGuard has no read-only role, so add a second user
+   next to your own in `AdGuardHome.yaml` (stop the service first), put its bcrypt hash in the `password:` field and the
+   plain password in `/etc/home-alert.conf` (`ADGUARD_USER`, `ADGUARD_PASS`; the file is mode 600). Hash:
+   `python3 -c "import bcrypt,getpass; print(bcrypt.hashpw(getpass.getpass().encode(), bcrypt.gensalt(10)).decode())"`
+   (`apt install python3-bcrypt`). Without it every other command still works.
+6. Optional: create a check on healthchecks.io (period 5 min, grace 10 min, Telegram integration) and write its ping
    URL to `/etc/healthchecks-url`. The watchdog pings it, so you also get an alert if the whole server goes dark,
    which nothing running on the server itself can report.
 

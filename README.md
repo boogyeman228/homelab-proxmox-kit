@@ -14,7 +14,8 @@ inbound ports. Remote access goes through Tailscale.
 | AdGuard Home (LXC) | `adguard/` | DNS ad/tracker/malware blocking, optional adult, gambling and scam lists, short local names |
 | Monitoring stack (LXC + Docker) | `stack/` | Uptime Kuma, Prometheus, Grafana (provisioned dashboard), Homepage start page, Caddy for `*.home` names |
 | Watchdog | `host/sbin/home-watchdog.sh` | Checks host and stack every 5 minutes, sends Telegram alerts on state changes only |
-| Weekly digest | `host/sbin/home-digest.sh` | Sunday summary: uptime, power, disk, last backup, pending updates |
+| Telegram bot | `host/sbin/home-bot.sh`, `home-report.sh` | Ask the server yourself: `/status`, `/battery`, `/system`, `/services`, `/ads`, `/check site`, `/backup`, `/report`. Answers only your chat |
+| Reports | `host/sbin/home-digest.sh` | Short daily report (Mon-Sat 09:00) and a full weekly report on Sundays: uptime, power, battery health, disks, ads blocked, backups, updates |
 | Power reporting | `host/sbin/kuma-power-push.sh` | Tells an Uptime Kuma push monitor whether the host is on mains or battery |
 | Battery guard | `host/sbin/battery-guard.sh`, `host/bin/battery` | Clean shutdown below 10% on battery, `battery` status command |
 | USB NIC watchdog | `host/sbin/usb-lan-fix.sh` | Re-attaches a USB Ethernet adapter to the bridge when it drops |
@@ -24,7 +25,7 @@ inbound ports. Remote access goes through Tailscale.
  router ──┬── Proxmox host (.10)  ── home-watchdog, digest, battery guard, node_exporter
           ├── CT adguard (.11)     ── AdGuard Home
           └── CT monitor (.12)     ── Docker: Caddy, Homepage, Uptime Kuma, Prometheus, Grafana
- Telegram ◄── watchdog (direct), Uptime Kuma, Proxmox notifications
+ Telegram ◄──► watchdog (direct), reports, command bot; Uptime Kuma, Proxmox notifications
 ```
 
 The watchdog talks to Telegram on its own on purpose: if Uptime Kuma or the monitor container

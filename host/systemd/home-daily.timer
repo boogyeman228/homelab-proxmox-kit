@@ -1,0 +1,9 @@
+[Unit]
+Description=Short daily server report (Mon-Sat 09:00, Sunday has the weekly one)
+
+[Timer]
+OnCalendar=Mon..Sat 09:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target
