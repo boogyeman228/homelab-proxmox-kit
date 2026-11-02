@@ -1,0 +1,19 @@
+#!/bin/sh
+# Laptop battery and charger status
+B=/sys/class/power_supply/BAT0
+CM=/sys/bus/platform/drivers/ideapad_acpi/VPC2004:00/conservation_mode
+cap=$(cat $B/capacity); st=$(cat $B/status); ac=$(cat /sys/class/power_supply/ADP0/online)
+now=$(cat $B/energy_now); full=$(cat $B/energy_full); design=$(cat $B/energy_full_design)
+pw=$(cat $B/power_now); cyc=$(cat $B/cycle_count); cons=$(cat $CM 2>/dev/null)
+[ "$ac" = 1 ] && acs="connected" || acs="NOT connected"
+[ "$cons" = 1 ] && conss="on (holds ~60%)" || conss="off (charges to 100%)"
+echo "Charge:        ${cap}%  ($st)"
+echo "Charger:       $acs"
+awk -v p="$pw" 'BEGIN { printf "Power draw:    %.1f W\n", p/1000000 }'
+if [ "$st" = "Discharging" ] && [ "$pw" -gt 0 ]; then
+  awk -v n="$now" -v p="$pw" 'BEGIN { m=int(n/p*60); printf "Time left:     ~%dh %02dm\n", m/60, m%60 }'
+fi
+awk -v f="$full" -v d="$design" 'BEGIN { printf "Health:        %.0f%% of original capacity\n", f/d*100 }'
+echo "Cycles:        $cyc"
+echo "Conservation:  $conss"
+echo "Auto-shutdown: at 10% on battery ($(systemctl is-active battery-guard.timer))"

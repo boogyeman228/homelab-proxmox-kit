@@ -1,0 +1,5 @@
+[Unit]
+Description=Report mains/battery state to Uptime Kuma
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/kuma-power-push.sh

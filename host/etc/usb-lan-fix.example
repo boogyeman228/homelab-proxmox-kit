@@ -1,0 +1,5 @@
+# copy to /etc/default/usb-lan-fix
+# NIC name:  ip -br link   (USB NICs look like enx<mac>)
+IF=enx000000000000
+# PCI address of the USB controller the NIC sits on:  ls -l /sys/bus/usb/devices/  /  lspci | grep -i usb
+PCI=0000:00:14.0

@@ -1,0 +1,50 @@
+- Server:
+    - Proxmox:
+        href: https://192.168.1.10:8006
+        description: Hypervisor
+        icon: proxmox.svg
+        ping: 192.168.1.10
+        widget:
+          type: prometheusmetric
+          url: http://prometheus:9090
+          refreshInterval: 60000
+          metrics:
+            - label: CPU
+              query: 100 * (1 - avg(rate(node_cpu_seconds_total{mode="idle"}[5m])))
+              format: { type: percent, options: { maximumFractionDigits: 0 } }
+            - label: Memory
+              query: 100 * (1 - node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)
+              format: { type: percent, options: { maximumFractionDigits: 0 } }
+            - label: Battery
+              query: node_power_supply_capacity{power_supply="BAT0"}
+              format: { type: percent }
+            - label: Temp
+              query: node_hwmon_temp_celsius{chip="platform_coretemp_0",sensor="temp1"}
+              format: { type: number, suffix: "°" }
+    - Grafana:
+        href: http://grafana.home
+        description: Server graphs
+        icon: grafana.svg
+        siteMonitor: http://grafana:3000/api/health
+    - Uptime Kuma:
+        href: http://status.home
+        description: Status and Telegram alerts
+        icon: uptime-kuma.svg
+        siteMonitor: http://uptime-kuma:3001
+
+- Network:
+    - AdGuard Home:
+        href: http://adguard.home
+        description: DNS ad blocking
+        icon: adguard-home.svg
+        ping: 192.168.1.11
+    - Router:
+        href: http://192.168.1.1
+        description: ISP router
+        icon: router.svg
+        ping: 192.168.1.1
+    - Internet:
+        href: https://speed.cloudflare.com
+        description: Speed test
+        icon: cloudflare.svg
+        ping: 1.1.1.1

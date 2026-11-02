@@ -1,0 +1,46 @@
+# Filter lists used in AdGuard Home (Settings -> DNS blocklists), as they look in AdGuardHome.yaml.
+# Easiest way to apply: add them in the web UI. Editing the file needs the service stopped first.
+filters:
+  - enabled: true
+    url: https://adguardteam.github.io/HostlistsRegistry/assets/filter_1.txt
+    name: AdGuard DNS filter
+    id: 1
+  - enabled: true
+    url: https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.txt
+    name: HaGeZi Pro (ads, trackers)
+    id: 3
+  - enabled: true
+    url: https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.medium.txt
+    name: HaGeZi Threat Intelligence (malware, phishing)
+    id: 4
+  - enabled: true
+    url: https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nsfw.txt
+    name: HaGeZi NSFW (adult 18+)
+    id: 5
+  - enabled: true
+    url: https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/gambling.medium.txt
+    name: HaGeZi Gambling (medium)
+    id: 6
+  - enabled: true
+    url: https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/fake.txt
+    name: HaGeZi Fake (scams, fake shops, subscription traps)
+    id: 7
+
+dns:
+  upstream_dns:               # DoH, queried in parallel
+    - https://security.cloudflare-dns.com/dns-query
+    - https://dns.quad9.net/dns-query
+    - '[/lan/]192.168.1.1'    # local names go to the router
+  bootstrap_dns: [1.1.1.2, 9.9.9.9]
+  fallback_dns: [1.1.1.2]
+
+filtering:
+  safe_search:
+    enabled: true
+    youtube: false            # YouTube restricted mode hides too much
+  rewrites:                   # short local names
+    - {domain: pve.home,     answer: 192.168.1.10, enabled: true}
+    - {domain: adguard.home, answer: 192.168.1.11, enabled: true}
+    - {domain: home.home,    answer: 192.168.1.12, enabled: true}
+    - {domain: status.home,  answer: 192.168.1.12, enabled: true}
+    - {domain: grafana.home, answer: 192.168.1.12, enabled: true}

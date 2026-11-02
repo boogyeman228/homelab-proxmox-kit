@@ -1,0 +1,11 @@
+[Unit]
+Description=Keep USB LAN adapter attached to vmbr0
+After=networking.service
+
+[Service]
+Type=simple
+ExecStart=/usr/local/sbin/usb-lan-fix.sh
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

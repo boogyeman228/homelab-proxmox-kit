@@ -1,0 +1,7 @@
+# /etc/systemd/logind.conf.d/server.conf -- keep running with the lid closed, never sleep
+[Login]
+HandleLidSwitch=ignore
+HandleLidSwitchExternalPower=ignore
+HandleLidSwitchDocked=ignore
+HandleSuspendKey=ignore
+IdleAction=ignore

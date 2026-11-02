@@ -1,0 +1,10 @@
+[Unit]
+Description=Report power state to Uptime Kuma every minute
+
+[Timer]
+OnBootSec=90
+OnUnitActiveSec=60
+AccuracySec=1s
+
+[Install]
+WantedBy=timers.target

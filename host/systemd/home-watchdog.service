@@ -1,0 +1,7 @@
+[Unit]
+Description=Home server watchdog (alerts to Telegram)
+After=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/home-watchdog.sh

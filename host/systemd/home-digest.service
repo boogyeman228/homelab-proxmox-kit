@@ -1,0 +1,7 @@
+[Unit]
+Description=Weekly server digest to Telegram
+After=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/home-digest.sh

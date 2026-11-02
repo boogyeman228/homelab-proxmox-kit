@@ -1,0 +1,6 @@
+[Unit]
+Description=Shut down cleanly on low battery
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/battery-guard.sh

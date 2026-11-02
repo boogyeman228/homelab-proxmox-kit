@@ -1,0 +1,8 @@
+# copy to /etc/home-alert.conf, chmod 600, owner root
+TG_TOKEN=123456:replace-with-your-bot-token
+TG_CHAT=123456789
+# container IDs and addresses used by the watchdog
+ADGUARD_CT=111
+ADGUARD_IP=192.168.1.11
+MONITOR_CT=112
+MONITOR_IP=192.168.1.12

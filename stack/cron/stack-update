@@ -1,0 +1,2 @@
+# /etc/cron.d/stack-update inside the monitor container: update images weekly, after the Sunday backup
+30 4 * * 0 root cd /opt/stack && docker compose pull -q && docker compose up -d && docker image prune -f >/dev/null
