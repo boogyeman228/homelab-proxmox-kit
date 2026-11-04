@@ -35,5 +35,13 @@ phones keep ad blocking away from home. Disable key expiry for the server in the
 
 ## Updates
 
-Containers get unattended security upgrades. The Docker images (Kuma, Grafana, Homepage) are pulled by a weekly job
+Containers get unattended security upgrades. The Docker images tagged `latest` (Kuma, Grafana, Homepage, Apprise) are pulled by a weekly job
 inside the monitor container. Proxmox itself is updated by hand about once a month.
+Speedtest Tracker and Memos are pinned to a version on purpose: bump the tag by hand after reading the release notes.
+
+## Ceph on one node
+
+Proxmox offers to install Ceph, but on a single laptop with one disk it does nothing useful: Ceph needs at least
+three nodes (or three OSD disks) and a disk of its own for each OSD. Installed anyway, the monitor and manager
+take about 400 MB of RAM, and the default `ceph-*` enterprise repository breaks `apt update` without a
+subscription. Use `local-lvm` for disks and a USB drive or NAS for backups instead.

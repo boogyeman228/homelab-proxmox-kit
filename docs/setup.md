@@ -31,13 +31,17 @@ DNS (`94.140.14.14`) as the secondary, so the network keeps working when the ser
 
 ## 4. Monitoring stack
 
-Copy `stack/` to `/opt/stack` in CT 112 and run `docker compose up -d`.
+Copy `stack/` to `/opt/stack` in CT 112, copy `.env.example` to `.env` (fill it, `chmod 600 .env`) and run
+`docker compose up -d`. Create the data folders first: `mkdir -p speedtest memos && chown 1000:1000 speedtest`.
 
 - Caddy answers on port 80 and routes by host name: `status.home` → Uptime Kuma, `grafana.home` → Grafana,
-  everything else → Homepage. Add the matching rewrites in AdGuard (see `adguard/filters.yaml`).
+  `speed.home` → Speedtest Tracker, `memos.home` → Memos, everything else → Homepage. Add the matching rewrites in AdGuard (see `adguard/filters.yaml`).
 - Prometheus scrapes `node_exporter` on the host (port 9100). Install it with
   `apt install prometheus-node-exporter` and keep only the collectors you need.
 - Grafana loads the dashboard from `grafana/provisioning/dashboards/server.json`.
+- Speedtest Tracker measures the connection every 3 hours. Log in with the admin from `.env`, then in
+  Notifications → Apprise set the server to `http://apprise:8000/notify`, add a channel URL
+  (`tgram://BOT_TOKEN/CHAT_ID`) and set thresholds (Thresholds) so you only hear about slow results.
 
 In Uptime Kuma add monitors for: internet (ping `1.1.1.1`), router (ping), DNS (query through AdGuard),
 Proxmox (HTTPS, ignore the self-signed certificate) and a **push** monitor for the power state. Copy the push URL to

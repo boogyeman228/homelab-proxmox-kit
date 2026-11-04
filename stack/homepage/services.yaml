@@ -44,7 +44,14 @@
         icon: router.svg
         ping: 192.168.1.1
     - Internet:
-        href: https://speed.cloudflare.com
-        description: Speed test
-        icon: cloudflare.svg
+        href: http://speed.home
+        description: Speed test every 3 hours
+        icon: speedtest-tracker.png
         ping: 1.1.1.1
+
+- Apps:
+    - Memos:
+        href: http://memos.home
+        description: Quick notes
+        icon: memos.svg
+        siteMonitor: http://memos:5230

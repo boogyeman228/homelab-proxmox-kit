@@ -2,3 +2,4 @@
 home-alert.conf
 healthchecks-url
 kuma-push-url
+.env

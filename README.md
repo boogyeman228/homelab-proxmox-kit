@@ -13,6 +13,7 @@ inbound ports. Remote access goes through Tailscale.
 |---|---|---|
 | AdGuard Home (LXC) | `adguard/` | DNS ad/tracker/malware blocking, optional adult, gambling and scam lists, short local names |
 | Monitoring stack (LXC + Docker) | `stack/` | Uptime Kuma, Prometheus, Grafana (provisioned dashboard), Homepage start page, Caddy for `*.home` names |
+| Everyday apps (same stack) | `stack/` | Speedtest Tracker (speed history, alerts on slow results via Apprise), Memos (quick notes) |
 | Watchdog | `host/sbin/home-watchdog.sh` | Checks host and stack every 5 minutes, sends Telegram alerts on state changes only |
 | Telegram bot | `host/sbin/home-bot.sh`, `home-report.sh` | Ask the server yourself: `/status`, `/battery`, `/system`, `/services`, `/ads`, `/check site`, `/backup`, `/report`, `/charge`, `/fan`, `/wake`. Answers only your chat |
 | Reports | `host/sbin/home-digest.sh` | Short daily report (Mon-Sat 09:00) and a full weekly report on Sundays: uptime, power, battery health, disks, ads blocked, backups, updates |
@@ -26,7 +27,8 @@ inbound ports. Remote access goes through Tailscale.
 ```
  router ──┬── Proxmox host (.10)  ── home-watchdog, digest, battery guard, node_exporter
           ├── CT adguard (.11)     ── AdGuard Home
-          └── CT monitor (.12)     ── Docker: Caddy, Homepage, Uptime Kuma, Prometheus, Grafana
+          └── CT monitor (.12)     ── Docker: Caddy, Homepage, Uptime Kuma, Prometheus, Grafana,
+                                     Speedtest Tracker, Apprise, Memos
  Telegram ◄──► watchdog (direct), reports, command bot; Uptime Kuma, Proxmox notifications
 ```
 
@@ -44,8 +46,8 @@ nano /etc/home-alert.conf               # Telegram bot token + chat id
 bash host/proxmox-telegram-notify.sh    # route Proxmox notifications to Telegram
 ```
 
-The monitoring stack goes into the `monitor` container: copy `stack/` to `/opt/stack` and run
-`docker compose up -d`.
+The monitoring stack goes into the `monitor` container: copy `stack/` to `/opt/stack`, create `.env` from
+`.env.example` and run `docker compose up -d`.
 
 ## Alerts
 
@@ -57,7 +59,7 @@ The monitoring stack goes into the `monitor` container: copy `stack/` to `/opt/s
   from `/etc/home-alert.conf`; the `stack/` and `adguard/` files need a search and replace.
 - Hardware quirks (USB NIC, battery conservation mode, CGNAT and Tailscale) are in
   [docs/notes.md](docs/notes.md).
-- No secrets live in this repo. Tokens go to `/etc/home-alert.conf` (mode 600), which is git-ignored here.
+- No secrets live in this repo. Tokens go to `/etc/home-alert.conf` (mode 600) and `stack/.env`, both git-ignored here.
 
 ## License
 

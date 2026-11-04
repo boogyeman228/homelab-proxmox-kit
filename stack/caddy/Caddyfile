@@ -11,6 +11,14 @@ http://grafana.home {
 	reverse_proxy grafana:3000
 }
 
+http://speed.home {
+	reverse_proxy speedtest-tracker:80
+}
+
+http://memos.home {
+	reverse_proxy memos:5230
+}
+
 # home.home, the container IP and anything else -> start page
 # (push heartbeats from the host go to Uptime Kuma)
 http:// {
